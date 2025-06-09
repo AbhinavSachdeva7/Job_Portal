@@ -1,32 +1,43 @@
 // src/interfaces/auth.types.ts
 
+import { IUser, StatusType, UserType } from "./user.types";
+
 export interface IAuthService {
-    registerUser(email: string, password: string): Promise<number>;
+    registerUser(data: registerDTO): Promise<number>;
     loginUser(email: string, password: string): Promise<ILoginResponse | IAuthError>;
 }
 
-interface IUser{
-    id: number,
-    name?: string,
-    type: UserType,
-    email: string
-    createdAt: Date,
-    updatedAt: Date,
-    lastLoginAt: Date,
-    status: StatusType
+export interface IPasswordService{
+    hash(password: string): Promise<string>;
+    compare(plain:string, hashed: string): Promise<boolean>;
 }
 
-enum StatusType {
-    Active = 'Active',
-    Inactive = 'Inactive',
-    Pending = 'Pending',
-    Suspended = 'Suspended',
-    Deleted = 'Deleted'
+export interface IValidationService{
+    validUserEmailCheck(email: string): boolean;
+    validPasswordCheck(password: string): boolean;
 }
 
-enum UserType {
-  Poster = 'Poster',
-  Candidate = 'Candidate'
+export interface registerDTO{
+    email: string,
+    password: string,
+    role: UserType
+}
+
+export interface JwtPayload{
+    userId: number,
+    role: UserType
+}
+
+export interface AuthResponse{
+    user: {
+        id: number,
+        email: string,
+        role: UserType,
+        status:StatusType
+    };
+    tokens: {
+        accessToken: string;
+    };
 }
 
 interface ILoginResponse {
