@@ -23,6 +23,6 @@ export enum UserType {
 }
 
 export interface IUserRepository {
-    findByEmail(email: string): Promise<string>;
+    findByEmail(email: string): Promise<IUser>;
     create(userData: CreateUserDTO): Promise<IUser>;
 }

@@ -2,21 +2,6 @@
 
 import { IUser, StatusType, UserType } from "./user.types";
 
-export interface IAuthService {
-    registerUser(data: registerDTO): Promise<number>;
-    loginUser(email: string, password: string): Promise<ILoginResponse | IAuthError>;
-}
-
-export interface IPasswordService{
-    hash(password: string): Promise<string>;
-    compare(plain:string, hashed: string): Promise<boolean>;
-}
-
-export interface IValidationService{
-    validUserEmailCheck(email: string): boolean;
-    validPasswordCheck(password: string): boolean;
-}
-
 export interface registerDTO{
     email: string,
     password: string,
@@ -63,4 +48,19 @@ interface IAuthError {
     message: string;
     code: number;  // HTTP status code
     timestamp: Date;
+}
+
+export interface loginDTO {
+    email: string,
+    password: string
+}
+
+export interface IAuthService {
+    registerUser(data: registerDTO): Promise<AuthResponse>;
+    loginUser(data:loginDTO): Promise<ILoginResponse | IAuthError | AuthResponse>;
+}
+
+export interface IValidationService{
+    validUserEmailCheck(email: string): boolean;
+    validPasswordCheck(password: string): boolean;
 }
