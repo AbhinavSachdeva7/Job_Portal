@@ -1,4 +1,3 @@
-import { emitWarning } from 'process';
 import {
     AuthResponse,
     IAuthService,
@@ -17,7 +16,6 @@ export class AuthService implements IAuthService {
 
     constructor(
         userRepository: IUserRepository,
-
         passwordService: IPasswordService,
         tokenService: ITokenService
     ) {
@@ -72,10 +70,7 @@ export class AuthService implements IAuthService {
             throw new Error("incorrect credentials")
         }
 
-        const tokens = await this.tokenService.generateTokens({
-            userId: user.id, email: user.email,
-            role: user.role, status: user.status
-        });
+        const tokens = await this.tokenService.generateTokens({userId: user.id, role: user.role});
 
         return {
             user: {

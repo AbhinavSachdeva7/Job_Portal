@@ -1,3 +1,6 @@
+import { JwtPayload } from "jsonwebtoken";
+
 export interface ITokenService{
-    generateTokens(data: JSON): Promise<string>;
+    generateTokens(data: JwtPayload): Promise<string>;
+    verifyToken(token: string): Promise<JwtPayload>
 }
