@@ -1,24 +1,24 @@
 // src/interfaces/auth.types.ts
 
-import { IUser, StatusType, UserType } from "./user.types";
+import { IUser, UserStatus, UserRole } from "../interfaces";
 
 export interface registerDTO{
     email: string,
     password: string,
-    role: UserType
+    role: UserRole
 }
 
 export interface JwtPayload{
     userId: number,
-    role: UserType
+    role: UserRole
 }
 
 export interface AuthResponse{
     user: {
         id: number,
         email: string,
-        role: UserType,
-        status:StatusType
+        role: UserRole,
+        status: UserStatus | null
     };
     tokens: {
         accessToken: string;

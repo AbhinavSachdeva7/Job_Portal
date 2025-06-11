@@ -1,4 +1,4 @@
-CREATE TYPE user_status AS ENUM ( 'Active', 'Inactive', 'PendingProfile', 'Suspended', 'Deleted');
+CREATE TYPE user_status AS ENUM ( 'active', 'inactive', 'pending_profile', 'suspended', 'deleted');
 CREATE TYPE user_role AS ENUM ('candidate', 'recruiter', 'admin');
 CREATE TYPE job_status AS ENUM ('active', 'closed', 'draft');
 CREATE TYPE application_status AS ENUM ('pending', 'accepted', 'rejected');
@@ -8,7 +8,7 @@ CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     name VARCHAR(255),
     email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    hashed_password VARCHAR(255) NOT NULL,
     role user_role DEFAULT 'candidate',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -45,7 +45,7 @@ CREATE TABLE job_applications (
     application_id SERIAL PRIMARY KEY,
     job_id INT REFERENCES jobs(job_id) ON DELETE CASCADE,
     user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-    status application_status DEFAULT 'PendingProfile',  -- Pending, Accepted, Rejected
+    status application_status DEFAULT 'pending',  -- Pending, Accepted, Rejected
     applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(job_id, user_id)  -- Prevent multiple applications

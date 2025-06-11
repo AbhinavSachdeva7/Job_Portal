@@ -1,10 +1,11 @@
 // src/index.ts
-import express from 'express';
+import express, { Response, NextFunction} from 'express';
 import { AuthController } from './controllers/auth.controller';
 import {AuthService, PasswordService, TokenService, ValidationService} from './services'
 import { UserRepository } from './repositories/user.repository';
 import { errorHandler } from './middleware/error.middleware';
 import { createAuthMiddleware } from './middleware/auth/auth.middleware';
+import { AuthenticatedRequest } from './interfaces';
 
 const app = express();
 app.use(express.json());
@@ -26,7 +27,7 @@ const apiRouter = express.Router();
 apiRouter.post('/auth/register', (req, res, next) => authController.register(req, res, next));
 apiRouter.post('/auth/login', (req, res, next) => authController.login(req, res, next));
 
-apiRouter.get('/profile', authMiddleware, (req, res) => {
+apiRouter.get('/profile', authMiddleware, (req: AuthenticatedRequest, res: Response): void => {
     // Because the `authMiddleware` ran successfully, we know `req.user` exists.
     // The middleware has already validated the user and attached their info to the request.
     res.json({

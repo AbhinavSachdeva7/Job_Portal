@@ -2,8 +2,11 @@
   "name": "job_portal",
   "version": "1.0.0",
   "description": "Made a Job Portal where Recruiters can post jobs, see the candidates that have applied, Job Seekers can see the jobs posted. Also Created a Basic Login & Register Page",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -37,6 +40,7 @@
     "jiti": "^2.4.2",
     "nodemon": "^3.1.10",
     "pg": "^8.16.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.33.1"
   }

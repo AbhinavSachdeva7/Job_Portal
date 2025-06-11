@@ -1,0 +1,33 @@
+# This file defines our local development database service.
+version: '3.8'
+
+services:
+  # This is the name of our database service.
+  db:
+    # We're using the official PostgreSQL image, version 16.
+    # Using a specific version is better than 'latest' for reproducibility.
+    image: postgres:16
+
+    # This ensures the database restarts automatically if your computer reboots.
+    restart: always
+
+    # These are the environment variables that configure the PostgreSQL server.
+    # You MUST use these exact credentials in your application's .env file.
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=job_portal
+
+    # This maps the container's port 5432 to your computer's port 5432.
+    # This is how your Node.js application can connect to it via 'localhost'.
+    ports:
+      - '5432:5432'
+
+    # This ensures your data persists even if you stop and remove the container.
+    # The 'postgres_data' volume stores the actual database files.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+# This defines the named volume we referenced above.
+volumes:
+  postgres_data:

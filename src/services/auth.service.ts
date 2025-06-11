@@ -6,7 +6,7 @@ import {
     IUserRepository,
     ITokenService,
     loginDTO,
-    StatusType
+    UserStatus
 } from '../interfaces';
 
 export class AuthService implements IAuthService {
@@ -36,8 +36,9 @@ export class AuthService implements IAuthService {
 
         const newUser = await this.userRepository.create({
             email: data.email,
-            password: hashedPassword,
-            role: data.role
+            hashed_password: hashedPassword,
+            role: data.role,
+            status: UserStatus.pending_profile
         });
 
         const tokens = await this.tokenService.generateTokens({ userId: newUser.id, role: newUser.role });
@@ -67,7 +68,7 @@ export class AuthService implements IAuthService {
             throw new Error("incorrect credentials")
         }
 
-        if (user.status === StatusType.Suspended || user.status === StatusType.Deleted) {
+        if (user.status === UserStatus.suspended || user.status === UserStatus.deleted) {
             throw new Error("incorrect credentials")
         }
 

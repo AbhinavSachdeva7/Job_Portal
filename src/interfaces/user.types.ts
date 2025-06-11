@@ -1,15 +1,17 @@
+import { User, UserRole, UserStatus } from "@prisma/client";
+export {UserRole, UserStatus}
 export interface IUser{
     id: number,
     name?: string,
-    role: UserType,
+    role: UserRole,
     email: string
     createdAt: Date,
     updatedAt: Date,
     lastLoginAt: Date,
-    status: StatusType
+    status: UserStatus
 }
 
-export enum StatusType {
+enum StatusType {
     Active = 'Active',
     Inactive = 'Inactive',
     Pending = 'PendingProfile',
@@ -17,7 +19,7 @@ export enum StatusType {
     Deleted = 'Deleted'
 }
 
-export enum UserType {
+enum UserType {
   Poster = 'Poster',
   Candidate = 'Candidate'
 }
@@ -25,7 +27,8 @@ export enum UserType {
 export interface CreateUserDTO{
     email: string,
     hashed_password: string,
-    role: UserType
+    role: UserRole,
+    status: UserStatus
 }
 
 export interface IUserRepository {

@@ -1,19 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
 import { TokenService } from '../../services/token.service';
-import { ITokenService, JwtPayload } from '../../interfaces';
+import { AuthenticatedRequest, ITokenService, JwtPayload } from '../../interfaces';
 
 export function createAuthMiddleware(tokenService: ITokenService) {
-    return async function authMiddleware(req: Request, res: Response, next: NextFunction) {
+    return async function authMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ message: 'Authorization header is missing or malformed.' });
+            res.status(401).json({ message: 'Authorization header is missing or malformed.' });
+            return;
         }
 
         const token = authHeader.split(' ')[1];
 
         if (!token) {
-            return res.status(401).json({ message: 'Token not found.' });
+            res.status(401).json({ message: 'Token not found.' });
+            return;
         }
 
         try {
@@ -22,7 +24,8 @@ export function createAuthMiddleware(tokenService: ITokenService) {
             next(); // Proceed to the next middleware or route handler
         } catch (error) {
             // This will catch errors from verifyToken (e.g., expired, invalid)
-            return res.status(401).json({ message: 'Invalid or expired token.' });
+            res.status(401).json({ message: 'Invalid or expired token.' });
+            return;
         }
     };
 }
