@@ -3,14 +3,14 @@ import { ITokenService, JwtPayload } from "../interfaces";
 
 export class TokenService implements ITokenService{
     private readonly jwtSecret: string;
-    private readonly accessTokenExpiresIn: string;
+    private readonly accessTokenExpiresIn: string | number;
 
     constructor() {
         if (!process.env.JWT_SECRET) {
             throw new Error("Secret not defined")
         }
         this.jwtSecret = process.env.JWT_SECRET;
-        this.accessTokenExpiresIn = process.env.ACCESS_TOKEN_EXPIRES_IN || '60m';
+        this.accessTokenExpiresIn = process.env.ACCESS_TOKEN_EXPIRES_IN || '1h';
     }
 
     generateTokens(data: JwtPayload): Promise<string> {
@@ -18,12 +18,12 @@ export class TokenService implements ITokenService{
             try {
                 const token = jwt.sign(
                     data,
-                    this.jwtSecret,
+                    `${this.jwtSecret}`,
                     { expiresIn: this.accessTokenExpiresIn }
                 );
                 resolve(token);
             } catch (error) {
-                reject(error || new Error('Token generation failed.'));
+                reject(new Error(String(error)));
             }
         });
     }

@@ -22,7 +22,13 @@ export enum UserType {
   Candidate = 'Candidate'
 }
 
+export interface CreateUserDTO{
+    email: string,
+    hashed_password: string,
+    role: UserType
+}
+
 export interface IUserRepository {
-    findByEmail(email: string): Promise<IUser>;
-    create(userData: CreateUserDTO): Promise<IUser>;
+    findByEmail(email: string): Promise<User | null>;
+    create(userData: CreateUserDTO): Promise<User>;
 }

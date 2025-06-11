@@ -35,8 +35,9 @@ export class AuthService implements IAuthService {
         const hashedPassword = await this.passwordService.hash(data.password);
 
         const newUser = await this.userRepository.create({
-            email: data.email, password: hashedPassword,
-            role: data.role, status: 'PendingProfile'
+            email: data.email,
+            password: hashedPassword,
+            role: data.role
         });
 
         const tokens = await this.tokenService.generateTokens({ userId: newUser.id, role: newUser.role });
