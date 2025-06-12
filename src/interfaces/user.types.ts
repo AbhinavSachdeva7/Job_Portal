@@ -1,5 +1,7 @@
 import { User, UserRole, UserStatus } from "@prisma/client";
-export {UserRole, UserStatus}
+import { UpdateProfileDTO } from "../schemas/profile.schema";
+export { UserRole, UserStatus }
+
 export interface IUser{
     id: number,
     name?: string,
@@ -35,4 +37,9 @@ export interface IUserRepository {
     findByEmail(email: string): Promise<User | null>;
     create(userData: CreateUserDTO): Promise<User>;
     findById(id: number): Promise<User | null>;
+    update(id: number, data: Partial<User>): Promise<User>;
+}
+
+export interface IUserService {
+    updateProfile(userId: number, data: UpdateProfileDTO): Promise<User>;
 }

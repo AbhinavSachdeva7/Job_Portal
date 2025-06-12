@@ -76,7 +76,7 @@ model Job {
   userId      Int      @map("user_id") // The recruiter who posted it
   companyId   Int      @map("company_id")
   title       String?
-  description String[]
+  description String
   location    String?
   pay         String?
 
@@ -109,9 +109,11 @@ model UserProfile {
 model JobApplication {
   id        Int      @id @default(autoincrement()) @map("application_id")
   jobId     Int      @map("job_id")
-  userId    Int      @map("user_id") // The candidate who applied
+  userId    Int      @map("user_id") // The candidate who applied 
   appliedAt DateTime @default(now()) @map("applied_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  coverLetter String?
 
   // --- Relations ---
   job    Job  @relation(fields: [jobId], references: [id])

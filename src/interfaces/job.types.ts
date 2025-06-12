@@ -2,7 +2,7 @@ import { Job, User } from "@prisma/client"
 
 export interface CreateJobDTO{
     title: string,
-    description: string[],
+    description: string,
     location: string,
     pay: string
 }
