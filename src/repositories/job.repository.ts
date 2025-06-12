@@ -15,4 +15,14 @@ export class JobRepository implements IJobRepository{
             }
         })
     }
+
+    async findAll(): Promise<Job[]> {
+        return prisma.job.findMany();
+    }
+
+    async findById(id: number): Promise<Job | null> {
+        return prisma.job.findUnique({
+            where: { id }
+        });
+    }
 }

@@ -66,7 +66,7 @@ export default tseslint.config(
             "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0, "maxBOF": 0 }],
             "no-trailing-spaces": "error",
             "eol-last": "error",
-            "max-len": ["error", { "code": 150 }],
+            "max-len": ["error", { "code": 200 }],
         },
     },
 

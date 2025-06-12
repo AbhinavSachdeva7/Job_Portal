@@ -12,10 +12,6 @@ export class AuthController {
             const authResponse = await this.authService.registerUser(req.body);
             res.status(201).json(authResponse);
         } catch (error) {
-            if (error instanceof ZodError) {
-                res.status(400).json({ errors: error.flatten().fieldErrors });
-                return; // Stop execution
-            }
             next(error)
         }
     }
@@ -25,15 +21,11 @@ export class AuthController {
             const authResponse = await this.authService.loginUser(req.body)
             res.status(200).json(authResponse)
         } catch (error) {
-            if (error instanceof ZodError) {
-                res.status(400).json({ errors: error.flatten().fieldErrors });
-                return; // Stop execution
-            }
             next(error)
         }
     }
 
-    async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
+    logout(req: Request, res: Response, next: NextFunction): void {
         try {
             res.status(200).json({ message: "logged out" });
         } catch (error) {

@@ -17,4 +17,19 @@ export class JobService implements IJobService{
 
         return newJob
     }
+
+    async getAllJobs(): Promise<Job[]> {
+        const jobs = await this.jobRepository.findAll();
+        return jobs;
+    }
+
+    async getJobById(id: number): Promise<Job | null> {
+        const job = await this.jobRepository.findById(id);
+
+        if (!job) {
+            throw new AppError('NotFoundError', 'Job not found', 404);
+        }
+
+        return job;
+    }
 }
