@@ -1,28 +1,12 @@
+import { ZodType } from 'zod';
 import { IValidationService } from '../interfaces/auth.types';
 
 export class ValidationService implements IValidationService {
-    validUserEmailCheck(input: string): boolean {
-        if (input.length === 0) {
-            return false;
-    }
-
-    const emailCheck: RegExp = /^\S+@\S+\.\S+$/;
-    if (!emailCheck.test(input)) {
-        return false;
-    }
-
-    return true;
-}
-
-    validPasswordCheck(input: string): boolean {
-        if (input.length === 0) {
-            return false;
+    validate<T>(schema: ZodType<T>, data: unknown): T {
+        try {
+            return schema.parse(data);
+        } catch (error) {
+            throw error
         }
-
-        if(input.length < 8) {
-            return false;
-        }
-
-        return true;
     }
 }

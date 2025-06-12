@@ -44,19 +44,19 @@ model User {
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
   status          UserStatus?
+  companyId       Int?      // The foreign key. It's optional '?' because a 'candidate' won't have a company.    
 
   // --- Relations ---
   jobs            Job[]
   profile         UserProfile?
   applications    JobApplication[]
-  company         Company?
+  company         Company? @relation(fields: [companyId], references: [id]) 
 
   @@map("users")
 }
 
 model Company {
   id          Int      @id @default(autoincrement()) @map("company_id")
-  userId      Int      @unique @map("user_id") // A company is owned by one user
   name        String
   description String?
   website     String?
@@ -65,9 +65,9 @@ model Company {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   // --- Relations ---
-  owner User @relation(fields: [userId], references: [id])
-  jobs  Job[]
-
+  
+  jobs        Job[]
+  employees   User[]
   @@map("companies")
 }
 

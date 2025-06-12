@@ -1,11 +1,13 @@
 // src/index.ts
 import express, { Response, NextFunction} from 'express';
 import { AuthController } from './controllers/auth.controller';
-import {AuthService, PasswordService, TokenService, ValidationService} from './services'
+import {AuthService, PasswordService, TokenService} from './services'
 import { UserRepository } from './repositories/user.repository';
 import { errorHandler } from './middleware/error.middleware';
 import { createAuthMiddleware } from './middleware/auth/auth.middleware';
 import { AuthenticatedRequest } from './interfaces';
+import { validateResource } from './middleware/validation.middleware';
+import { loginSchema, registerSchema } from './schemas/register.schema';
 
 const app = express();
 app.use(express.json());
@@ -14,7 +16,6 @@ app.use(express.json());
 const userRepository = new UserRepository();
 const passwordService = new PasswordService();
 const tokenService = new TokenService();
-const validationService = new ValidationService();
 
 const authService = new AuthService(userRepository, passwordService, tokenService);
 
@@ -24,8 +25,9 @@ const authMiddleware = createAuthMiddleware(tokenService);
 
 const apiRouter = express.Router();
 // Routes
-apiRouter.post('/auth/register', (req, res, next) => authController.register(req, res, next));
-apiRouter.post('/auth/login', (req, res, next) => authController.login(req, res, next));
+apiRouter.post('/auth/register', validateResource(registerSchema), (req, res, next) => authController.register(req, res, next));
+apiRouter.post('/auth/login', validateResource(loginSchema), (req, res, next) => authController.login(req, res, next));
+apiRouter.post('/auth/logout', (req, res, next) => authController.logout(req, res, next));
 
 apiRouter.get('/profile', authMiddleware, (req: AuthenticatedRequest, res: Response): void => {
     // Because the `authMiddleware` ran successfully, we know `req.user` exists.

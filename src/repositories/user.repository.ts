@@ -21,4 +21,10 @@ export class UserRepository implements IUserRepository{
             }
         })
     }
+
+    async findById(id: number): Promise<User | null> {
+        return prisma.user.findUnique({
+            where: { id }
+        });
+    }
 }

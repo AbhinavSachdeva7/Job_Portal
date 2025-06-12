@@ -1,5 +1,6 @@
 // src/interfaces/auth.types.ts
 
+import { ZodSchema } from "zod";
 import { IUser, UserStatus, UserRole } from "../interfaces";
 
 export interface registerDTO{
@@ -61,6 +62,5 @@ export interface IAuthService {
 }
 
 export interface IValidationService{
-    validUserEmailCheck(email: string): boolean;
-    validPasswordCheck(password: string): boolean;
+    validate<T>(schema: ZodSchema<T>, data: unknown): T;
 }

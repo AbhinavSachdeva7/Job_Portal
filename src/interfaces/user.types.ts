@@ -34,4 +34,5 @@ export interface CreateUserDTO{
 export interface IUserRepository {
     findByEmail(email: string): Promise<User | null>;
     create(userData: CreateUserDTO): Promise<User>;
+    findById(id: number): Promise<User | null>;
 }
