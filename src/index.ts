@@ -19,8 +19,10 @@ import { applyToJobSchema } from './schemas/application.schema';
 import { ApplicationRepository } from './repositories/application.repository';
 import { ApplicationService } from './services/application.service';
 import { ApplicationController } from './controllers/application.controller';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 // Dependency Injection
