@@ -50,7 +50,7 @@ pipeline {
                     echo "🔨 Building Docker image: ${DOCKER_IMAGE}:${DOCKER_TAG}"
                     
                     // Build with two tags: build number and latest
-                    def customImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    def customImage = docker.build("${DOCKER_IMAGE}:latest")
                     customImage.tag("${DOCKER_LATEST}")
                     
                     echo "✅ Docker image built successfully!"
