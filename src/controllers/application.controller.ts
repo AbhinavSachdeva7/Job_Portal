@@ -2,7 +2,10 @@ import { NextFunction, Response } from 'express';
 import { AuthenticatedRequest, IApplicationService } from '../interfaces';
 
 export class ApplicationController {
-  constructor(private applicationService: IApplicationService) {}
+  constructor(private applicationService: IApplicationService) {
+    this.applyToJob = this.applyToJob.bind(this);
+    this.getApplicationsForJob = this.getApplicationsForJob.bind(this);
+  }
 
   async applyToJob(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {

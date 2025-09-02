@@ -7,6 +7,6 @@
     "outDir": "./dist",
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["src/**/*.ts", "src/declaration.d.ts", "eslint.config.ts"],
+  "include": ["src/**/*.ts", "src/declaration.d.ts"],
   "exclude": ["node_modules"]
 }

@@ -3,7 +3,9 @@ import { AuthenticatedRequest, IUserService } from '../interfaces';
 import { UpdateProfileDTO } from '../schemas/profile.schema';
 
 export class UserController {
-    constructor(private userService: IUserService) {}
+    constructor(private userService: IUserService) {
+        this.updateProfile = this.updateProfile.bind(this);
+    }
 
     async updateProfile(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
         try {

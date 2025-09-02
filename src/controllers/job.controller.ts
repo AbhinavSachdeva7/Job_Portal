@@ -8,7 +8,11 @@ export class JobController {
     constructor(
         private jobService: IJobService,
         private userRepository: IUserRepository
-    ) { }
+    ) {
+        this.create = this.create.bind(this);
+        this.getAll = this.getAll.bind(this);
+        this.getById = this.getById.bind(this);
+    }
 
     async create(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
         try {

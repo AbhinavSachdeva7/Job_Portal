@@ -1,3 +1,4 @@
+import { AppError } from '../errors/app.error';
 import {
     AuthResponse,
     IAuthService,
@@ -29,7 +30,7 @@ export class AuthService implements IAuthService {
         const existingUser = await this.userRepository.findByEmail(data.email);
 
         if (existingUser) {
-            throw new Error("User Exists")
+            throw new AppError("conflict", "User Exists", 409)
         }
 
         const hashedPassword = await this.passwordService.hash(data.password);
@@ -59,17 +60,17 @@ export class AuthService implements IAuthService {
         const user = await this.userRepository.findByEmail(data.email);
 
         if (!user) {
-            throw new Error("User does not exist")
+            throw new AppError("Unauthorized", "User does not exist", 401)
         }
 
         const isPasswordCorrect = await this.passwordService.compare(data.password, user.hashedPassword);
 
         if (!isPasswordCorrect) {
-            throw new Error("incorrect credentials")
+            throw new AppError("Unauthorized", "incorrect credentials", 401)
         }
 
         if (user.status === UserStatus.suspended || user.status === UserStatus.deleted) {
-            throw new Error("incorrect credentials")
+            throw new AppError("Unauthorized", "incorrect credentials", 401)
         }
 
         const tokens = await this.tokenService.generateTokens({userId: user.id, role: user.role});

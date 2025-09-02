@@ -24,6 +24,11 @@ RUN npm install --only=production
 # Copy the built code and Prisma schema
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/schema.prisma ./
+COPY --from=builder /usr/src/app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /usr/src/app/.env ./
+COPY --from=builder /usr/src/app/public ./public
 
+# Expose port (add this before CMD)
+EXPOSE 3000
 # The command to start the application
 CMD ["node", "dist/index.js"]

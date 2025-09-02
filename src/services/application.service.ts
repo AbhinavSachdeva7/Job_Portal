@@ -1,4 +1,4 @@
-import { JobApplication, User, UserRole } from '@prisma/client';
+import { JobApplication, UserRole } from '@prisma/client';
 import { AppError } from '../errors/app.error';
 import { IApplicationRepository, IJobRepository, IApplicationService, JwtPayload } from '../interfaces';
 import { ApplyToJobDTO } from '../schemas/application.schema';
