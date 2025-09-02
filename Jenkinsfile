@@ -5,6 +5,7 @@ pipeline {
     // WHAT environment variables do we need?
     environment {
         // Docker image configuration
+		DOCKER_HOST = 'tcp://host.docker.internal:2375'
         DOCKER_IMAGE = 'abhinavsachdeva/job-portal'
         DOCKER_TAG = "${BUILD_NUMBER}"
         DOCKER_LATEST = 'latest'
