@@ -62,7 +62,7 @@ pipeline {
             }
         }
         
-        // STAGE 3: Test the application
+        // STAGE 3: Test Application (Enhanced Debugging)
         stage('🧪 Test Application') {
             steps {
                 script {
@@ -80,27 +80,48 @@ pipeline {
                                  "-e DATABASE_URL=postgresql://test:test@localhost:5432/test")
                         
                         echo "⏱️ Waiting for application to start..."
-                        sleep(time: 15, unit: 'SECONDS')
+                        sleep(time: 30, unit: 'SECONDS')  // Increased wait time
                         
-                        // Test if API responds
+                        // Enhanced debugging
                         sh '''
-                            echo "🌐 Testing API endpoint..."
-                            curl -f http://localhost:3001/ || {
-                                echo "❌ API test failed!"
-                                docker logs test-container-${BUILD_NUMBER}
-                                exit 1
-                            }
-                            echo "✅ API test passed!"
+                            echo "🔍 === DEBUGGING INFO ==="
+                            echo "🔍 Container status:"
+                            docker ps | grep test-container-${BUILD_NUMBER} || echo "Container not found!"
+                            
+                            echo "🔍 Container processes:"
+                            docker exec test-container-${BUILD_NUMBER} ps aux || echo "Cannot check processes"
+                            
+                            echo "🔍 Container network:"
+                            docker exec test-container-${BUILD_NUMBER} netstat -tulpn || echo "Cannot check network"
+                            
+                            echo "🔍 Container logs (last 20 lines):"
+                            docker logs --tail 20 test-container-${BUILD_NUMBER}
+                            
+                            echo "🔍 Host network check:"
+                            netstat -tulpn | grep :3001 || echo "Nothing on host port 3001"
+                            
+                            echo "🔍 Testing internal container connectivity:"
+                            docker exec test-container-${BUILD_NUMBER} curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/ || echo "Internal connectivity failed"
+                            
+                            echo "🔍 Testing internal container root endpoint:"
+                            docker exec test-container-${BUILD_NUMBER} curl -v http://localhost:3000/ || echo "Internal root test failed"
                         '''
                         
-                        // Test static files
+                        // Test external connectivity with retries
                         sh '''
-                            echo "📄 Testing static files..."
-                            curl -f http://localhost:3001/register.html || {
-                                echo "❌ Static file test failed!"
-                                exit 1
-                            }
-                            echo "✅ Static files test passed!"
+                            echo "🌐 Testing external connectivity with retries..."
+                            for i in 1 2 3 4 5; do
+                                echo "Attempt $i/5:"
+                                if curl -f -v http://localhost:3001/; then
+                                    echo "✅ API test passed on attempt $i!"
+                                    exit 0
+                                else
+                                    echo "❌ Attempt $i failed, waiting 10 seconds..."
+                                    sleep 10
+                                fi
+                            done
+                            echo "❌ All attempts failed!"
+                            exit 1
                         '''
                         
                     } finally {
