@@ -126,23 +126,29 @@ pipeline {
                 script {
                     echo "📤 Pushing image to Docker Hub..."
                     
-                    // Use withCredentials instead of withRegistry for more control
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', 
                                                     usernameVariable: 'DOCKER_USER', 
                                                     passwordVariable: 'DOCKER_PASS')]) {
-                        sh '''
-                            echo "🔐 Logging into Docker Hub..."
-                            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                            
-                            echo "📤 Pushing image with build number tag..."
-                            docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
-                            
-                            echo "📤 Pushing image with latest tag..."
-                            docker push ${DOCKER_IMAGE}:${DOCKER_LATEST}
-                            
-                            echo "✅ Push completed successfully!"
-                            echo "🏷️ Pushed tags: ${DOCKER_TAG}, ${DOCKER_LATEST}"
-                        '''
+                        try {
+                            sh '''
+                                echo "🔐 Logging into Docker Hub..."
+                                docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+                                
+                                echo "📤 Pushing image: ${DOCKER_IMAGE}:${DOCKER_TAG}..."
+                                docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                                
+                                echo "📤 Pushing image: ${DOCKER_IMAGE}:${DOCKER_LATEST}..."
+                                docker push ${DOCKER_IMAGE}:${DOCKER_LATEST}
+                                
+                                echo "✅ Docker Hub push successful!"
+                                echo "🌐 Image available at: https://hub.docker.com/r/${DOCKER_IMAGE}"
+                                echo "🏷️ Tags pushed: ${DOCKER_TAG}, ${DOCKER_LATEST}"
+                            '''
+                        } catch (Exception e) {
+                            error("Docker Hub push failed: ${e.getMessage()}")
+                        } finally {
+                            sh 'docker logout || true'
+                        }
                     }
                 }
             }
