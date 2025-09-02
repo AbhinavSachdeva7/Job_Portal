@@ -32,3 +32,12 @@ COPY --from=builder /usr/src/app/public ./public
 EXPOSE 3000
 # The command to start the application
 CMD ["node", "dist/index.js"]
+
+
+
+# Jenkins initial setup is required. An admin user has been created and a password generated.
+# Please use the following password to proceed to installation:
+
+# ed5768e1a8a746f58f105566196ed867
+
+# This may also be found at: /var/jenkins_home/secrets/initialAdminPassword

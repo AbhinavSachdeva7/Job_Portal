@@ -3,3 +3,4 @@ dist
 .env
 stuff.txt
 .cursorignore
+old_code
