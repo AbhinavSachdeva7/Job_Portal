@@ -69,9 +69,15 @@ pipeline {
                     echo "🔍 Testing Docker container..."
                     
                     try {
-                        // Start container for testing
+                        // Start container for testing WITH environment variables
                         def testContainer = docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}")
-                            .run("-d -p 3001:3000 --name test-container-${BUILD_NUMBER}")
+                            .run("-d -p 3001:3000 --name test-container-${BUILD_NUMBER} " +
+                                 "-e NODE_ENV=test " +
+                                 "-e JWT_SECRET=test-secret-key-for-jenkins-testing " +
+                                 "-e ACCESS_TOKEN_EXPIRES_IN=86400 " +
+                                 "-e BCRYPT_SALT_ROUNDS=10 " +
+                                 "-e PORT=3000 " +
+                                 "-e DATABASE_URL=postgresql://test:test@localhost:5432/test")
                         
                         echo "⏱️ Waiting for application to start..."
                         sleep(time: 15, unit: 'SECONDS')
