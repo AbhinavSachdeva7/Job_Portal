@@ -126,57 +126,41 @@ pipeline {
                 script {
                     echo "📤 Pushing image to Docker Hub..."
                     
-                    // Login to Docker Hub and push both tags
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-                        def image = docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}")
-                        image.push()
-                        image.push("${DOCKER_LATEST}")
-                        
-                        echo "✅ Image pushed successfully!"
-                        echo "🏷️ Tags: ${DOCKER_TAG}, ${DOCKER_LATEST}"
+                    // Use withCredentials instead of withRegistry for more control
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', 
+                                                    usernameVariable: 'DOCKER_USER', 
+                                                    passwordVariable: 'DOCKER_PASS')]) {
+                        sh '''
+                            echo "🔐 Logging into Docker Hub..."
+                            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                            
+                            echo "📤 Pushing image with build number tag..."
+                            docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                            
+                            echo "📤 Pushing image with latest tag..."
+                            docker push ${DOCKER_IMAGE}:${DOCKER_LATEST}
+                            
+                            echo "✅ Push completed successfully!"
+                            echo "🏷️ Pushed tags: ${DOCKER_TAG}, ${DOCKER_LATEST}"
+                        '''
                     }
                 }
             }
         }
         
-        // STAGE 5: Deploy to Azure
+        // STAGE 5: Deploy to Azure (Disabled for now)
         stage('🚀 Deploy to Azure') {
             when {
-                branch 'main'  // Only deploy from main branch
+                allOf {
+                    branch 'main'
+                    environment name: 'ENABLE_AZURE_DEPLOY', value: 'False'
+                }
             }
             steps {
                 script {
-                    echo "🚀 Deploying to Azure Web App..."
-                    
-                    try {
-                        // Restart Azure Web App to pull new image
-                        sh '''
-                            echo "🔄 Restarting Azure Web App to pull latest image..."
-                            curl -X POST \
-                                -H "Authorization: Bearer ${AZURE_ACCESS_TOKEN}" \
-                                -H "Content-Type: application/json" \
-                                -w "HTTP Status: %{http_code}\\n" \
-                                "https://management.azure.com/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${AZURE_RESOURCE_GROUP}/providers/Microsoft.Web/sites/${AZURE_APP_NAME}/restart?api-version=2018-02-01"
-                        '''
-                        
-                        echo "⏱️ Waiting for deployment to complete..."
-                        sleep(time: 60, unit: 'SECONDS')
-                        
-                        // Verify deployment
-                        sh '''
-                            echo "✅ Verifying deployment..."
-                            curl -f https://${AZURE_APP_NAME}.azurewebsites.net/ || {
-                                echo "❌ Deployment verification failed!"
-                                exit 1
-                            }
-                            echo "🎉 Deployment successful!"
-                        '''
-                        
-                    } catch (Exception e) {
-                        echo "⚠️ Azure deployment failed: ${e.getMessage()}"
-                        echo "📝 Check Azure portal for details"
-                        error("Deployment failed")
-                    }
+                    echo "🚀 Azure deployment skipped (ENABLE_AZURE_DEPLOY not set)"
+                    echo "ℹ️ To enable: Set ENABLE_AZURE_DEPLOY=true environment variable"
+                    echo "ℹ️ And configure real Azure credentials"
                 }
             }
         }
