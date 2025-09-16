@@ -16,38 +16,41 @@
 			</p>
 			<div class="collapse" id="collapseExample">
 				<div class="card card-body">
-					<form method="POST" action="config.php">
+					<form id="submit-job-form" >
 						<div class="mb-3">
-							<label for="exampleInputEmail1" class="form-label">Company Name</label>
-							<input type="text" class="form-control" id="exampleInputEmail1" name="cname">
+							<label for="jobTitle" class="form-label">Job Title</label>
+							<input type="text" class="form-control" id="jobTitle" name="jobTitle">
 		
 						</div>
 						<div class="mb-3">
-							<label for="exampleInputposition1" class="form-label">Position</label>
-							<input type="text" class="form-control" id="exampleInputposition1" name="position">
+							<label for="jobDescription" class="form-label">Job Description</label>
+							<textarea class="form-control" id="jobDescription" name="jobDescription"></textarea>
 						</div>
 						<div class="mb-3">
-							<label for="JobDecription" class="form-label">Job Description</label>
-							<textarea class="form-control" id="JobDescription" name="jdesc"></textarea>
+							<label for="location" class="form-label">Location</label>
+							<input type="text" class="form-control" id="location" name="location">
 						</div>
 						<div class="mb-3">
-							<label for="ctc" class="form-label">CTC</label>
-							<input type="text" class="form-control" id="ctc" name="ctc">
+							<label for="pay" class="form-label">Pay</label>
+							<input type="text" class="form-control" id="pay" name="pay">
 						</div>
 		
 						<button type="submit" class="btn btn-primary" name="submit_job">Submit</button>
 					</form>
 				</div>
-		
+				
 			</div>
+			
+			<div id="message-container" class="alert mt-3" style="display: none;"></div>
+
 			<div class="container mt-5">
 				<table class="table table-striped" id="jobs-table">
 					<thead>
 						<tr>		
-							<th scope="col">Company Name</th>
-							<th scope="col">Position</th>
+							<th scope="col">Job Title</th>
 							<th scope="col">Job Description</th>
-							<th scope="col">CTC</th>
+							<th scope="col">Location</th>
+							<th scope="col">Pay</th>
 						</tr>
 					</thead>
 					<tbody>
